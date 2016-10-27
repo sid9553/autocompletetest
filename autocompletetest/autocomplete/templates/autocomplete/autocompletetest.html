@@ -1,32 +1,28 @@
 
+{% extends 'prodman/basenew.html' %}
 {% load staticfiles %}
+{% block pagetitle %}Add Steps{% endblock %}
 {% block content %}
-<div class="slider-wrap"><div class="slider-ctn"id="landing-slidr">
-
-<section class="landing landing-large text-lt" style="background-image: url('{% static 'buildpage/images/RenAM500.png' %}');padding-bottom:120px">
-  <div class="ctn">
-    <h1 class="title">Add Route Steps</h1>
-</section>
-
-</div> </div>
 
 <section id="one">
 <section class="block aggregator" >
 
 <div class="ctn">
                   <center>        
-                  <font face = Flexo><form id= "myForm" method = 'POST' action="{% url 'autocomplete:autocompletetest' %}" enctype="multipart/form-data">{% csrf_token %}
-<div class = 'table' id="form_template">
-                <table>
+                  <font face = Flexo><form id= "myForm" method = 'POST' action="{% url 'buildpage:routestepinfo' %}" enctype="multipart/form-data">{% csrf_token %}
+                  {{ formset.management_form }}
+<div class = 'table' id="form_template" style="display:none"> <table>               
+                  {{formset.empty_form}}
+                  </table>
+                  </div>
+                  <div class = 'table'>
+                  {% for form in formset %}
+                  <table>
                   <tbody>
-                  {% for form in formset.forms %}
-                  <tr>
-                                    {{form.as_table}}
-                  </tr> 
-                                    {% endfor %}
+                  {{form.as_table}}
                   </tbody>
                   </table>
-                 {{ formset.management_form }}
+                  {% endfor %}
 </div>
                  <div id="forms"></div>
     <p>&nbsp;</p>
@@ -38,22 +34,29 @@
     <span>Add this number<table><input type = "number" name = "quantity" value = "1" style = "width: 30px;">
  of steps</span>
 <p><input type = "button" value = "Add" id = "generate_forms" ></p>
-
                   </font>
                   </center> 
         </div>
   </div>
 </section>
 </section>
-
+          {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
 </body>
 {% block footer %}
-<script type="text/javascript" src="{% static 'autocomplete/jquery.js' %}"></script>
-<script type="text/javascript" src="{% static 'autocomplete/select2.js' %}"></script>
-<script type="text/javascript" src="{% static 'autocomplete/jqueryclone.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'autocomplete/autocomplete.init.js' %}"></script>
-<script type="text/javascript" src="{% static 'autocomplete/jquery.formset.js' %}"></script>
-<script type="text/javascript" src="{% static 'autocomplete/jquery.autocomplete.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'buildpage/jquery.js' %}"></script>
+<script type="text/javascript" src="{% static 'buildpage/select2.js' %}"></script>
+<script type="text/javascript" src="{% static 'buildpage/select2.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'buildpage/jqueryclone.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'buildpage/clonemore.js' %}"></script>
+<script type="text/javascript" src="{% static 'buildpage/autocomplete.init.js' %}"></script>
+<script type="text/javascript" src="{% static 'buildpage/jquery.formset.js' %}"></script>
+<script type="text/javascript" src="{% static 'buildpage/jquery.autocomplete.min.js' %}"></script>
 <script>
         $(function() {
             // this is on click event just to demo.
@@ -65,7 +68,7 @@
                 // copy the template and replace prefixes with the correct index
                 for (i=0;i<quantity;i++) {
                     // Note: Must use global replace here
-                    html = $("#form_template").clone().html().replace(/__prefix_/g, i);
+                    html = $("#form_template").clone().html().replace(/__prefix__/g, i);
                     $("#forms").append(html);
                 };
             })
@@ -81,14 +84,64 @@
                 })
             })
         });
-    )
+    })
    
 </script>
+<!-- <script>
+    $('#add_more').click(function() {
+        cloneMore('div.table:last', 'service');
+    });
+</script> -->
 
+<!-- <script type="text/javascript">
+    $(function() {
+        $('#myForm tbody tr').formset();
+    })
+</script> -->
+
+<!-- 
+<script type="text/javascript">    $('#add_more').click(function(){
+  function add_aform(inst, item) {
+  if ($(':input[name$="participant"][value=' + item.id + ']').length) {
+    return false;
+  }
+  var total = $('#id_' + inst + '-TOTAL_FORMS').val();
+  var sul = '#' + inst;
+  var li = $(sul + ' li:last-child');
+  var new_li = li.clone().appendTo(sul);
+  li.find('div.table').append(item.label);
+  new_li.find(':input').each(function () {
+    var new_name = $(this).attr('name')
+      .replace('-' + (total - 1) + '-', '-' + total + '-');
+    $(this).attr('name', new_name);
+  });
+  new_li.find('label').each(function () {
+    var tmp = $(this).attr('for')
+      .replace('-' + (total - 1) + '-', '-' + total + '-');
+    $(this).attr('for', new_for);
+  });
+  new_li.find('.delete').click(del_aform);
+  $('#id_' + inst + '-TOTAL_FORMS').val(++total);
+}
+ })
+</script> -->
+<!-- <script type="text/javascript">
+function clearForm() {
+if(document.getElementById) {
+document.myForm.reset();
+}
+}
+</script> -->
 {{ formset.media }}
 
 {% endblock footer %}
 
 {% endblock %}
 
+
+
+
+
+
+ 
 
