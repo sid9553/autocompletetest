@@ -2,43 +2,39 @@
 {% load staticfiles %}
 {% block pagetitle %}Add Steps{% endblock %}
 {% block content %}
+<div class="slider-wrap"><div class="slider-ctn" id="landing-slidr">
 
-<section id="one">
-<section class="block aggregator" >
+<section class="landing landing-large text-lt" style="background-image: url('{% static 'buildpage/images/RenAM500.png' %}');padding-bottom:120px">
+  <div class="ctn">
+    <h1 class="title">Add Route Steps</h1>
+</section>
 
-<div class="ctn">
+</div> </div>
                   <center>        
+                  <script type=text/ id="item-template">
+                  <table>
+                      {{ formset.empty_form.as_table }}
+                  </table>
+                  </script>
                   <font face = Flexo><form id= "myForm" method = 'POST' action="{% url 'buildpage:routestepinfo' %}" enctype="multipart/form-data">{% csrf_token %}
                   {{ formset.management_form }}
-<div class = 'table' id="form_template" style="display:none"> <table>               
-                  {{formset.empty_form}}
-                  </table>
-                  </div>
-                  <div class = 'table'>
+<div id="items-form-container">
+
                   {% for form in formset %}
+
+                  <div id="item-{{ forloop.counter0 }}">
                   <table>
-                  <tbody>
                   {{form.as_table}}
-                  </tbody>
-                  </table>
+                  <table>
+                  </div>
                   {% endfor %}
 </div>
-                 <div id="forms"></div>
-    <p>&nbsp;</p>
-    <p>&nbsp;</p>
+<a href="#" id="add-item-button" class="btn btn-info add-item">Add Step</a>
               <input type = "submit" name = "Submit Steps">
                   </form>
-    <p>&nbsp;</p>
-    <p>&nbsp;</p>
-    <span>Add this number<table><input type = "number" name = "quantity" value = "1" style = "width: 30px;">
- of steps</span>
-<p><input type = "button" value = "Add" id = "generate_forms" ></p>
                   </font>
                   </center> 
         </div>
-  </div>
-</section>
-</section>
           {% if messages %}
             <ul class="messages">
                 {% for message in messages %}
@@ -57,6 +53,25 @@
 <script type="text/javascript" src="{% static 'buildpage/jquery.formset.js' %}"></script>
 <script type="text/javascript" src="{% static 'buildpage/jquery.autocomplete.min.js' %}"></script>
 <script>
+$(document).ready(function() {
+    $('.add-item').click(function(ev) {
+        ev.preventDefault();
+        var count = $('#items-form-container').children().length;
+        var item = $('#item-template').html();
+        var list = item.replace(/__prefix__/g, count);
+        $('div#items-form-container').append(list);
+
+        // update form count
+        $('#id_item_items-TOTAL_FORMS').attr('value', count+1);
+
+        // some animate to scroll to view our new form
+        $('html, body').animate({
+                scrollTop: $("#add-item-button").position().top-200
+            }, 800);
+    });
+});
+</script>
+<!-- <script>
         $(function() {
             // this is on click event just to demo.
             // You would probably run this at page load or quantity change.
@@ -72,7 +87,7 @@
                 };
             })
         })
-</script>
+</script> -->
 <script type="text/javascript">
  $(function() {
         $('#myForm tbody tr').formset({
@@ -82,7 +97,7 @@
                     $(this).trigger('autocompleteLightInitialize');
                 })
             })
-        });
+        );
     })
    
 </script>
